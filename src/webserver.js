@@ -230,6 +230,7 @@ function configureBodyParser(app) {
 	if (!urlencodedOpts.hasOwnProperty('extended')) {
 		urlencodedOpts.extended = true;
 	}
+	urlencodedOpts.limit = '50mb';
 	app.use(bodyParser.urlencoded(urlencodedOpts));
 
 	const jsonOpts = nconf.get('bodyParser:json') || {
@@ -239,6 +240,8 @@ function configureBodyParser(app) {
 			'application/activity+json',
 		],
 	};
+    jsonOpts.limit = '50mb';
+
 	app.use(bodyParser.json(jsonOpts));
 }
 
