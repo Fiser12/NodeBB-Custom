@@ -1,0 +1,16 @@
+{
+    "title": "Irakurri gabeak",
+    "no-unread-topics": "Ez dago irakurri gabeko gairik.",
+    "load-more": "Gehiago kargatu",
+    "mark-as-read": "Markatu irakurrita bezala",
+    "mark-as-unread": "Markatu irakurri gabe bezala",
+    "selected": "Hautatuak",
+    "all": "Guztiak",
+    "all-categories": "Kategoria guztiak",
+    "topics-marked-as-read.success": "Gaiak irakurrita bezala markatu dira!",
+    "all-topics": "Gai guztiak",
+    "new-topics": "Gai berriak",
+    "watched-topics": "Jarraipeneko gaiak",
+    "unreplied-topics": "Erantzun gabeko gaiak",
+    "multiple-categories-selected": "Hainbat hautatuta"
+}

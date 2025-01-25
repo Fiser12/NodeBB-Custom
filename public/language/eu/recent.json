@@ -1,0 +1,13 @@
+{
+    "title": "Azkenak",
+    "day": "Eguna",
+    "week": "Astea",
+    "month": "Hilabetea",
+    "year": "Urtea",
+    "alltime": "Denbora guztia",
+    "no-recent-topics": "Ez dago azken gairik.",
+    "no-popular-topics": "Ez dago gai popularrik.",
+    "load-new-posts": "Kargatu mezu berriak",
+    "uncategorized.title": "Ezagutzen diren gai guztiak",
+    "uncategorized.intro": "Orrialde honek foro honek jaso dituen gai guztien zerrenda kronologikoa erakusten du.<br />Beheko gaietan adierazitako ikuspuntu eta iritziak ez daude moderatuta eta baliteke webgune honen ikuspuntu eta iritziak ez adieraztea."
+}

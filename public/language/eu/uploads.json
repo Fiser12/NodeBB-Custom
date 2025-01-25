@@ -1,0 +1,9 @@
+{
+    "uploading-file": "Fitxategia igotzen...",
+    "select-file-to-upload": "Hautatu fitxategi bat igotzeko!",
+    "upload-success": "Fitxategia ondo igo da!",
+    "maximum-file-size": "Gehienez %1 kb",
+    "no-uploads-found": "Ez da igotako fitxategirik aurkitu",
+    "public-uploads-info": "Igotako fitxategiak publikoak dira, bisitari guztiek ikus ditzakete.",
+    "private-uploads-info": "Igotako fitxategiak pribatuak dira, saioa hasi duten erabiltzaileek soilik ikus ditzakete."
+}

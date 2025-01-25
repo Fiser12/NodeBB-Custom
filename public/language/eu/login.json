@@ -1,0 +1,12 @@
+{
+    "username-email": "Erabiltzaile-izena / E-posta",
+    "username": "Erabiltzaile-izena",
+    "remember-me": "Gogoratu nire saioa?",
+    "forgot-password": "Pasahitza ahaztu duzu?",
+    "alternative-logins": "Beste saio-hasiera batzuk",
+    "failed-login-attempt": "Saio-hasiera okerra",
+    "login-successful": "Ongi etorri!",
+    "dont-have-account": "Ez duzu konturik?",
+    "logged-out-due-to-inactivity": "Administrazio-paneletik saioa itxi da jarduera ezagatik",
+    "caps-lock-enabled": "Letra larriak blokeatuta daude"
+}

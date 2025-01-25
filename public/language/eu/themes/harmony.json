@@ -1,0 +1,23 @@
+{
+    "theme-name": "Harmony Estiloa",
+    "skins": "Azalak",
+    "collapse": "Tolestu",
+    "expand": "Zabaldu",
+    "sidebar-toggle": "Alboko barra txandakatu",
+    "login-register-to-search": "Hasi saioa edo erregistratu bilatzeko.",
+    "settings.title": "Estiloaren ezarpenak",
+    "settings.enableQuickReply": "Gaitu erantzun azkarra",
+    "settings.enableBreadcrumbs": "Erakutsi nabigazio-bideak Kategoria eta Gai orrietan",
+    "settings.enableBreadcrumbs.why": "Nabigazio-bideak orrialde gehienetan ikusgai daude nabigazioa errazteko. Kategoria- eta gai-orrien oinarrizko diseinuak guraso-orrietara itzultzeko beste modu batzuk ditu, baina nabigazio-bidea desaktiba daiteke nahasmena murrizteko.",
+    "settings.centerHeaderElements": "Zentratu goiburuko elementuak",
+    "settings.mobileTopicTeasers": "Erakutsi gaien aurrerapenak mugikorrean",
+    "settings.stickyToolbar": "Tresna-barra itsaskorra",
+    "settings.stickyToolbar.help": "Gai- eta kategoria-orrietako tresna-barra orrialdearen goialdean itsatsita geratuko da.",
+    "settings.topicSidebarTools": "Gaiaren alboko barrako tresnak",
+    "settings.topicSidebarTools.help": "Aukera honek gaiaren tresnak alboko barrara mugituko ditu mahaigainean.",
+    "settings.autohideBottombar": "Ezkutatu automatikoki mugikorraren nabigazio-barra",
+    "settings.autohideBottombar.help": "Mugikorraren barra ezkutatu egingo da orrialdea behera korritzean.",
+    "settings.topMobilebar": "Mugitu mugikorraren nabigazio-barra goialdera",
+    "settings.openSidebars": "Ireki alboko barrak",
+    "settings.chatModals": "Gaitu txat modalak"
+}

@@ -1,0 +1,17 @@
+{
+    "all-tags": "Etiketa guztiak",
+    "no-tag-topics": "Ez dago etiketa hau duen gairik.",
+    "no-tags-found": "Ez da etiketarik aurkitu",
+    "tags": "Etiketak",
+    "enter-tags-here": "Sartu etiketak, %1 - %2 karaktere.",
+    "enter-tags-here-short": "Sartu etiketak...",
+    "no-tags": "Oraindik ez dago etiketarik.",
+    "select-tags": "Hautatu etiketak",
+    "tag-whitelist": "Etiketen zerrenda zuria",
+    "watching": "Jarraipenean",
+    "not-watching": "Jarraipenik gabe",
+    "watching.description": "Jakinarazi gai berriak daudenean.",
+    "not-watching.description": "Ez jakinarazi gai berriak daudenean.",
+    "following-tag.message": "Hemendik aurrera jakinarazpenak jasoko dituzu norbaitek etiketa honekin gai bat argitaratzen duenean.",
+    "not-following-tag.message": "Ez duzu jakinarazpenik jasoko norbaitek etiketa honekin gai bat argitaratzen duenean."
+}

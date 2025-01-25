@@ -1,0 +1,10 @@
+{
+    "awarded-x-reputation": "<strong>%1</strong> ospe puntu jaso dituzu",
+    "awarded-group-membership": "<strong>%1</strong> taldera gehitu zaituzte",
+
+    "essentials/user.reputation-conditional-value": "<span class=\"text-xs\">(Ospea %1 %2)</span>",
+    "essentials/user.postcount-conditional-value": "<span class=\"text-xs\">(Mezu kopurua %1 %2)</span>",
+    "essentials/user.lastonline-conditional-value": "<span class=\"text-xs\">(Azken konexioa %1 %2)</span>",
+    "essentials/user.joindate-conditional-value": "<span class=\"text-xs\">(Izena emateko data %1 %2)</span>",
+    "essentials/user.daysregistered-conditional-value": "<span class=\"text-xs\">(Erregistratutako egunak %1 %2)</span>"
+}
