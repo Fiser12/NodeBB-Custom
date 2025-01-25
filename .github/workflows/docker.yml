@@ -4,16 +4,21 @@ name: Run Docker
 on:
   push:
     branches:
-      - 'master'
-      - 'v*.x'
+      - 'rg/main'
     tags:
-      - 'v*'
+      - 'v*' 
   workflow_dispatch:
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 permissions:
   contents: read
   packages: write
+  
+env:
+  # Use docker.io for Docker Hub if empty
+  REGISTRY: ghcr.io
+  # github.repository as <account>/<repo>
+  IMAGE_NAME: ${{ github.repository }}
 
 jobs:
   build:
@@ -45,22 +50,19 @@ jobs:
           registry: ghcr.io
           username: ${{ github.repository_owner }}
           password: ${{ secrets.GITHUB_TOKEN }}
-      - name: Docker meta
-        id: meta
-        uses: docker/metadata-action@v5
-        with:
-          images: ${{ env.IMAGE }}
 
-      - name: Cache node_modules
-        id: cache-node-modules
-        uses: actions/cache@v4
+      - name: Get current date in NST
+        run: echo "CURRENT_DATE_NST=$(date +'%Y%m%d-%H%M%S' -d '-3 hours -30 minutes')" >> $GITHUB_ENV
+
+      - name: Extract Docker metadata
+        id: meta
+        uses: docker/metadata-action@96383f45573cb7f253c731d3b3ab81c87ef81934 # v5.0.0
         with:
-          path: var-cache-node-modules
-          key: var-cache-node-modules-${{ hashFiles('Dockerfile', 'install/package.json') }}
+          images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
 
       - name: Build and push Docker images
+        uses: docker/build-push-action@v5
         id: build
-        uses: docker/build-push-action@v6
         with:
           cache-from: type=gha
           cache-to: type=gha,mode=min

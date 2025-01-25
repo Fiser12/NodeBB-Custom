@@ -1,0 +1,16 @@
+{
+    "lead": "Konfiguratu zure IP zerrenda beltza hemen.",
+    "description": "Batzuetan, erabiltzaile-kontu baten debekua ez da nahikoa. Beste batzuetan, fororako sarbidea IP zehatz batera edo IP-barruti batera mugatzea da foroa babesteko modurik onena. Egoera horietan, arazoak sortzen dituzten IP helbideak edo CIDR bloke osoak gehi ditzakezu zerrenda beltz honetara, eta ezingo dute saioa hasi edo kontu berri bat erregistratu.",
+    "active-rules": "Arau aktiboak",
+    "validate": "Balidatu zerrenda beltza",
+    "apply": "Aplikatu zerrenda beltza",
+    "hints": "Sintaxi-argibideak",
+    "hint-1": "Definitu IP helbide bakarra lerro bakoitzeko. IP blokeak gehi ditzakezu CIDR formatua jarraitzen badute (adibidez, <code>192.168.100.0/22</code>).",
+    "hint-2": "Iruzkinak gehi ditzakezu lerroak <code>#</code> sinboloarekin hasiz.",
+    "validate.x-valid": "<strong>%2</strong> arauetatik <strong>%1</strong> baliogarria da/dira.",
+    "validate.x-invalid": "Hurrengo <strong>%1</strong> arauak baliogabeak dira:",
+    "alerts.applied-success": "Zerrenda beltza aplikatu da",
+    "analytics.blacklist-hourly": "<strong>1. irudia</strong> &ndash; Zerrenda beltzaren blokeoak orduko",
+    "analytics.blacklist-daily": "<strong>2. irudia</strong> &ndash; Zerrenda beltzaren blokeoak eguneko",
+    "ip-banned": "IPa debekatuta"
+}
