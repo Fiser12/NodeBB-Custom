@@ -75,13 +75,13 @@ postsSyncController.sync = async (req, res) => {
 async function getLastNPostsFromTopic(tid, n = 20, uid = 0) {
   // 1) Get total post count
   const postCount = await topics.getTopicField(tid, 'postcount');
-  if (!postCount) {
+  if (!postCount || postCount <= 1) {
     // If there's no postcount, the topic might not exist or has 0 posts
     return [];
   }
-
+  
   // 2) Calculate the window for the last N posts
-  const start = Math.max(0, postCount - n);
+  const start = Math.max(1, postCount - n);
   const stop = postCount - 1;
   const topicData = await topics.getTopicData(tid);
   const postsData = await topics.getTopicPosts(topicData, `tid:${tid}:posts`, start, stop, uid, false);
