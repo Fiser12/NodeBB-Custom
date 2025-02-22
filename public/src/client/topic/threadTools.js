@@ -85,12 +85,24 @@ define('forum/topic/threadTools', [
 
 		topicContainer.on('click', '[component="topic/event/delete"]', function () {
 			const eventId = $(this).attr('data-topic-event-id');
-			const eventEl = $(this).parents('[component="topic/event"]');
+			const eventEl = $(this).parents('[data-topic-event-id]');
 			bootbox.confirm('[[topic:delete-event-confirm]]', (ok) => {
 				if (ok) {
 					api.del(`/topics/${tid}/events/${eventId}`, {})
 						.then(function () {
+							const itemsParent = eventEl.parents('[component="topic/event/items"]');
 							eventEl.remove();
+							if (itemsParent.length) {
+								const childrenCount = itemsParent.children().length;
+								const eventParent = itemsParent.parents('[component="topic/event"]');
+								if (!childrenCount) {
+									eventParent.remove();
+								} else {
+									eventParent
+										.find('[data-bs-toggle]')
+										.translateText(`[[topic:announcers-x, ${childrenCount}]]`);
+								}
+							}
 						})
 						.catch(alerts.error);
 				}
@@ -294,7 +306,7 @@ define('forum/topic/threadTools', [
 
 	ThreadTools.setLockedState = function (data) {
 		const threadEl = components.get('topic');
-		if (parseInt(data.tid, 10) !== parseInt(threadEl.attr('data-tid'), 10)) {
+		if (String(data.tid) !== threadEl.attr('data-tid')) {
 			return;
 		}
 
@@ -322,7 +334,7 @@ define('forum/topic/threadTools', [
 
 	ThreadTools.setDeleteState = function (data) {
 		const threadEl = components.get('topic');
-		if (parseInt(data.tid, 10) !== parseInt(threadEl.attr('data-tid'), 10)) {
+		if (String(data.tid) !== threadEl.attr('data-tid')) {
 			return;
 		}
 
@@ -356,7 +368,7 @@ define('forum/topic/threadTools', [
 
 	ThreadTools.setPinnedState = function (data) {
 		const threadEl = components.get('topic');
-		if (parseInt(data.tid, 10) !== parseInt(threadEl.attr('data-tid'), 10)) {
+		if (String(data.tid) !== threadEl.attr('data-tid')) {
 			return;
 		}
 

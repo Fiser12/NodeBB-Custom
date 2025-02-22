@@ -23,6 +23,12 @@ get:
                 type: string
               browserTitle:
                 type: string
+              description:
+                type: string
+              keywords:
+                type: string
+              brand:logo:
+                type: string
               titleLayout:
                 type: string
               showSiteTitle:

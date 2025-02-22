@@ -32,6 +32,9 @@ apiController.loadConfig = async function (req) {
 		assetBaseUrl: asset_base_url, // deprecate in 1.20.x
 		siteTitle: validator.escape(String(meta.config.title || meta.config.browserTitle || 'NodeBB')),
 		browserTitle: validator.escape(String(meta.config.browserTitle || meta.config.title || 'NodeBB')),
+		description: validator.escape(String(meta.config.description || '')),
+		keywords: validator.escape(String(meta.config.keywords || '')),
+		'brand:logo': validator.escape(String(meta.config['brand:logo'])),
 		titleLayout: (meta.config.titleLayout || '{pageTitle} | {browserTitle}').replace(/{/g, '&#123;').replace(/}/g, '&#125;'),
 		showSiteTitle: meta.config.showSiteTitle === 1,
 		maintenanceMode: meta.config.maintenanceMode === 1,

@@ -1,3 +1,219 @@
+#### v4.0.5 (2025-02-20)
+
+##### Chores
+
+*  bump composer to 10.2.46 for #13132 (7520e4f6)
+*  up harmony (f82f00e5)
+*  up widgets (e23a14c1)
+*  up harmony (c0996a80)
+*  up dbsearch (d0a9ddea)
+*  up dbsearch (310fab65)
+*  add test helper to activitypub file (4bc0031f)
+*  incrementing version number - v4.0.4 (b1125cce)
+*  update changelog for v4.0.4 (d3b69a39)
+*  incrementing version number - v4.0.3 (2b65c735)
+*  incrementing version number - v4.0.2 (73fe5fcf)
+*  incrementing version number - v4.0.1 (a461b758)
+*  incrementing version number - v4.0.0 (c1eaee45)
+
+##### New Features
+
+*  add upload button to quickreply (f67a0a12)
+*  remove activities older than a week (9997189a)
+
+##### Bug Fixes
+
+*  typo (e63f1234)
+*  #13136, do not log 404s for AP requests (93f48409)
+*  #13129, serve category backgroundImage as actor `icon`, not `image` (b8200095)
+*  escape ip blacklist rules (625f4751)
+*  closes #13180, don't execute cron jobs if ap disabled (a410587c)
+*  #13172, Topics.addParentPosts not sending sourceContent in calling parsePosts (bb9687bd)
+*  #13179, fix context resolution failure bug with frequency (6245e33d)
+*  add back chronological sorting of asserted notes (de6e63bb)
+*  #13170, remove mime-type and regex test for "Emoji" attachment, wrap tag name in colons if not provided (92708d2f)
+*  closes #13176, check if uid is number when creating tokens (80cc1d34)
+*  notes.assertPrivate sanity checks (5e71d597)
+*  page index for single page, closes #13173 (b0e8058f)
+*  remove handle on category purge (4134a075)
+
+##### Tests
+
+*  dont clear local when testing (669755d1)
+*  show objects on fail (f2824073)
+*  wait after post request (64318242)
+
+#### v4.0.4 (2025-02-17)
+
+##### Chores
+
+*  up harmony (0fed9a76)
+*  up harmony (ef2c606d)
+*  up harmony (f1da510f)
+*  up deps (fa366095)
+*  up harmony (df07fcfa)
+*  up harmony (de5caf8f)
+*  up harmony (d1f78295)
+*  incrementing version number - v4.0.3 (2b65c735)
+*  update changelog for v4.0.3 (123e1635)
+*  incrementing version number - v4.0.2 (73fe5fcf)
+*  incrementing version number - v4.0.1 (a461b758)
+*  incrementing version number - v4.0.0 (c1eaee45)
+* **i18n:**  fallback strings for new resources: nodebb.themes-harmony (99210918)
+
+##### Bug Fixes
+
+*  clear parsed post cache when updating a post's attachments, #13164 (33d7b9b3)
+*  logic failure causing remote posts with image to not parse properly, #13164 (d936d5c0)
+*  change the passed-in notificatiom id for `notifyTagFollowers` to contain the list of matched tags (04f51cc6)
+*  actor.prune, dont try deleting same users (ffbe4b7b)
+*  getLocalFollowCounts, show non existing deletes (cfbb8ff8)
+*  return null if field isn't in hash (70a9f6d3)
+*  getUserField so that it always returns null (e85662a5)
+*  isArray check (224910b1)
+*  sanity-check the id when mocking a post (5cbf3dd7)
+*  missing actor on some local activities when federating out (040584f0)
+
+##### Performance Improvements
+
+*  closes #13145, reduce calls in actors.prune (d590c2af)
+
+##### Refactors
+
+*  single remove (77dd6dd0)
+*  cleanup ip:recent (d8724708)
+*  hooks button (c4b01330)
+
+#### v4.0.3 (2025-02-09)
+
+##### Chores
+
+*  up harmony (2ee0cda2)
+*  update persona (b6b76639)
+*  bump persona to fix theme description issue (cd88cce0)
+*  up harmony (a01bf73e)
+*  forgot to remove bad code (865c09a5)
+*  up harmony (c3f8222f)
+*  up harmony (f07f3801)
+*  up harmony (67a789ad)
+*  up themes (c1c5cc6e)
+*  up themes (b2b0ed35)
+*  up peace (55eedcbe)
+*  up themes (38a21e29)
+*  up harmony (58e551fe)
+*  incrementing version number - v4.0.2 (73fe5fcf)
+*  update changelog for v4.0.2 (75588ffe)
+*  incrementing version number - v4.0.1 (a461b758)
+*  incrementing version number - v4.0.0 (c1eaee45)
+
+##### Bug Fixes
+
+*  delete from payload instead of setting null (1b4e0c87)
+*  regression :tmi: (f5328aa8)
+*  #13139, payload.version can be null (bfe6d9d8)
+*  tidChanged (1f8e2f9a)
+*  #13135, tids are not numeric for ap topics (d687f081)
+*  handle cases where url passed to mime does not pass because url contained a query string (5baa46d0)
+*  isDraft logic, closes #13119 (21156673)
+*  path on windows, #13119 (36063d1f)
+*  #13115, prevent messages from getting duplicated (1ff8e1e4)
+*  #13115, limit bodyLength length (8e9fdb5f)
+
+##### Other Changes
+
+*  remove log (a8e7bf35)
+
+##### Refactors
+
+*  events are returned inside post objects (3ab22c2c)
+*  move dropdown search inputs into dropdown (b993be6f)
+*  server.destroy (72091ec4)
+*  remove deprecated methods (265e44f0)
+
+##### Tests
+
+*  search endpoint with start & end (c1b630d4)
+
+#### v4.0.2 (2025-02-02)
+
+##### Chores
+
+*  up persona (0298a3af)
+*  up harmony (d77d2055)
+*  up themes, closes #13102 (6672de00)
+*  incrementing version number - v4.0.1 (a461b758)
+*  update changelog for v4.0.1 (3dbd2b30)
+*  incrementing version number - v4.0.0 (c1eaee45)
+
+##### New Features
+
+*  allow selecting empty for custom selects (be62ae24)
+*  add uid to post.parent (4d733590)
+*  add description and keywords to api/config (933c18f4)
+
+##### Bug Fixes
+
+*  bad logic that invisibly broke outgoing user follows completely (51e660d5)
+*  closes #13096, fix regression from renaming language files (0b92d525)
+
+##### Refactors
+
+*  remove old comment (d4a1b4da)
+
+##### Tests
+
+*  fix schema (ef5ae006)
+*  fix schema (47734d4c)
+
+#### v4.0.1 (2025-01-29)
+
+##### Chores
+
+*  up dbsearch (88fa4553)
+*  up benchpress (c9584800)
+*  up harmony (10409e0e)
+*  up themes (6918c3f3)
+*  up themes (050effe2)
+*  up harmony (90e0a2d6)
+*  incrementing version number - v4.0.0 (c1eaee45)
+*  update changelog for v4.0.0 (ae8f58d6)
+
+##### New Features
+
+*  use text-danger if chat over limit (2f5b4b29)
+
+##### Bug Fixes
+
+*  #13087, disallow following cid -1 (ddb6e0f3)
+*  encoding of pid in notifyCategoryFollowers, #13087 (6d88dcb2)
+*  #13084 bump persona (4feda224)
+*  closes #13091, dont show world category (4c66eed9)
+*  #13088, up dbsearch (8644565a)
+*  #13090, update themes fix selector (822bff62)
+*  #13086 move rateLimit check (487d9f73)
+*  null checks for category sync and actor assertions (b3b8b9e9)
+*  #13067, add sourceContent to teasers (679fcb71)
+*  #13065, send missing `actor` property when 1b12 announcing local posts (e61df4de)
+*  closes #13068, encodeURIComponent X-Redirect (f3b8ed27)
+*  #13062 add displayname to email tpl data (f0c2090d)
+
+##### Other Changes
+
+*  missing ; (8b38cb3a)
+*  reduce image size (#12702) (a95a51c6)
+
+##### Refactors
+
+*  🤡 (4ba01d18)
+
+##### Tests
+
+*  adjust webfinger test for updated 404 status code (4a827b7e)
+*  fix x-redirect tests (b80440aa)
+*  add sourceContent to spec (526a9521)
+*  change test to 404 (52f7f0a7)
+*  remove only (0ba4ba65)
+
 #### v4.0.0 (2025-01-20)
 
 ##### Breaking Changes

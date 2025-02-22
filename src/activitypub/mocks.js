@@ -29,12 +29,14 @@ const Mocks = module.exports;
  * Done so the output HTML is stripped of all non-essential items; mainly classes from plugins..
  */
 const sanitizeConfig = {
-	allowedTags: sanitize.defaults.allowedTags.concat(['img']),
+	allowedTags: sanitize.defaults.allowedTags.concat(['img', 'picture', 'source']),
 	allowedClasses: {
 		'*': [],
 	},
 	allowedAttributes: {
 		a: ['href', 'rel'],
+		source: ['type', 'src', 'srcset', 'sizes', 'media', 'height', 'width'],
+		img: ['alt', 'height', 'ismap', 'src', 'usemap', 'width', 'srcset'],
 	},
 };
 
@@ -155,7 +157,10 @@ Mocks.post = async (objects) => {
 	await activitypub.actors.assert(Array.from(actorIds));
 
 	const posts = await Promise.all(objects.map(async (object) => {
-		if (!activitypub._constants.acceptedPostTypes.includes(object.type)) {
+		if (
+			!activitypub._constants.acceptedPostTypes.includes(object.type) ||
+			!activitypub.helpers.isUri(object.id) // sanity-check the id
+		) {
 			return null;
 		}
 
@@ -187,17 +192,24 @@ Mocks.post = async (objects) => {
 		}
 
 		switch (true) {
-			case image && image.hasOwnProperty('url') && image.url && mime.getType(image.url).startsWith('image/'): {
+			case image && image.hasOwnProperty('url') && !!image.url: {
 				image = image.url;
 				break;
 			}
 
-			case image && typeof image === 'string' && mime.getType(image).startsWith('image/'): {
+			case image && typeof image === 'string': {
 				// no change
 				break;
 			}
 
 			default: {
+				image = null;
+			}
+		}
+		if (image) {
+			const parsed = new URL(image);
+			if (!mime.getType(parsed.pathname).startsWith('image/')) {
+				activitypub.helpers.log(`[activitypub/mocks.post] Received image not identified as image due to MIME type: ${image}`);
 				image = null;
 			}
 		}
@@ -331,23 +343,24 @@ Mocks.actors.category = async (cid) => {
 	} = await categories.getCategoryData(cid);
 	const publicKey = await activitypub.getPublicKey('cid', cid);
 
-	let image;
+	let icon;
 	if (backgroundImage) {
 		const filename = path.basename(utils.decodeHTMLEntities(backgroundImage));
-		image = {
+		icon = {
 			type: 'Image',
 			mediaType: mime.getType(filename),
 			url: `${nconf.get('url')}${utils.decodeHTMLEntities(backgroundImage)}`,
 		};
+	} else {
+		icon = await categories.icons.get(cid);
+		icon = icon.get('png');
+		icon = {
+			type: 'Image',
+			mediaType: 'image/png',
+			url: `${nconf.get('url')}${icon}`,
+		};
 	}
 
-	let icon = await categories.icons.get(cid);
-	icon = icon.get('png');
-	icon = {
-		type: 'Image',
-		mediaType: 'image/png',
-		url: `${nconf.get('url')}${icon}`,
-	};
 
 	return {
 		'@context': [
@@ -365,7 +378,7 @@ Mocks.actors.category = async (cid) => {
 		name,
 		preferredUsername,
 		summary,
-		image,
+		// image, // todo once categories have cover photos
 		icon,
 
 		publicKey: {
