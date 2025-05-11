@@ -28,6 +28,8 @@ const adminController = {
 	settings: require('./admin/settings'),
 	logger: require('./admin/logger'),
 	themes: require('./admin/themes'),
+	postsSync: require('./admin/posts_sync'),
+	getYoutubeVideos: require('./admin/external/youtube'),
 	users: require('./admin/users'),
 	uploads: require('./admin/uploads'),
 	info: require('./admin/info'),
