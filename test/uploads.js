@@ -128,7 +128,7 @@ describe('Upload Controllers', () => {
 			assert(body && body.status && body.response && body.response.images);
 			assert(Array.isArray(body.response.images));
 			assert(body.response.images[0].url);
-			const name = body.response.images[0].url.replace(`${nconf.get('relative_path') + nconf.get('upload_url')}/`, '');
+			const name = body.response.images[0].url.replace(`${nconf.get('relative_path') + nconf.get('upload_url')}`, '');
 			await socketUser.deleteUpload({ uid: regularUid }, { uid: regularUid, name: name });
 
 			const uploads = await db.getSortedSetRange(`uid:${regularUid}:uploads`, 0, -1);
@@ -400,6 +400,17 @@ describe('Upload Controllers', () => {
 			assert.strictEqual(body.error, '[[error:invalid-path]]');
 		});
 
+		it('should fail to upload regular file if directory does not exist', async () => {
+			const { response, body } = await helpers.uploadFile(`${nconf.get('url')}/api/admin/upload/file`, path.join(__dirname, '../test/files/test.png'), {
+				params: JSON.stringify({
+					folder: 'does-not-exist',
+				}),
+			}, jar, csrf_token);
+
+			assert.equal(response.statusCode, 500);
+			assert.strictEqual(body.error, '[[error:invalid-path]]');
+		});
+
 		describe('ACP uploads screen', () => {
 			it('should create a folder', async () => {
 				const { response } = await helpers.createFolder('', 'myfolder', jar, csrf_token);
@@ -474,7 +485,7 @@ describe('Upload Controllers', () => {
 
 				assert.strictEqual(orphans.length, 1);
 				orphans.forEach((relPath) => {
-					assert(relPath.startsWith('files/'));
+					assert(relPath.startsWith('/files/'));
 					assert(relPath.endsWith('test.png'));
 				});
 			});

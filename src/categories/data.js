@@ -36,8 +36,8 @@ module.exports = function (Categories) {
 			return [];
 		}
 
-		cids = cids.map(cid => parseInt(cid, 10));
-		const keys = cids.map(cid => `category:${cid}`);
+		cids = cids.map(cid => (utils.isNumber(cid) ? parseInt(cid, 10) : cid));
+		const keys = cids.map(cid => (utils.isNumber(cid) ? `category:${cid}` : `categoryRemote:${cid}`));
 		const categories = await db.getObjects(keys, fields);
 
 		// Handle cid -1
@@ -87,11 +87,11 @@ module.exports = function (Categories) {
 	};
 
 	Categories.setCategoryField = async function (cid, field, value) {
-		await db.setObjectField(`category:${cid}`, field, value);
+		await db.setObjectField(`${utils.isNumber(cid) ? 'category' : 'categoryRemote'}:${cid}`, field, value);
 	};
 
 	Categories.incrementCategoryFieldBy = async function (cid, field, value) {
-		await db.incrObjectFieldBy(`category:${cid}`, field, value);
+		await db.incrObjectFieldBy(`${utils.isNumber(cid) ? 'category' : 'categoryRemote'}:${cid}`, field, value);
 	};
 };
 
@@ -117,7 +117,7 @@ function modifyCategory(category, fields) {
 
 	db.parseIntFields(category, intFields, fields);
 
-	const escapeFields = ['name', 'color', 'bgColor', 'backgroundImage', 'imageClass', 'class', 'link'];
+	const escapeFields = ['name', 'description', 'federatedDescription', 'color', 'bgColor', 'backgroundImage', 'imageClass', 'class', 'link'];
 	escapeFields.forEach((field) => {
 		if (category.hasOwnProperty(field)) {
 			category[field] = validator.escape(String(category[field] || ''));
@@ -137,7 +137,6 @@ function modifyCategory(category, fields) {
 	}
 
 	if (category.description) {
-		category.description = validator.escape(String(category.description));
 		category.descriptionParsed = category.descriptionParsed || category.description;
 	}
 }

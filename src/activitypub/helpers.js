@@ -28,6 +28,8 @@ const sha256 = payload => crypto.createHash('sha256').update(payload).digest('he
 
 const Helpers = module.exports;
 
+Helpers._webfingerCache = webfingerCache; // exported for tests
+
 Helpers._test = (method, args) => {
 	// because I am lazy and I probably wrote some variant of this below code 1000 times already
 	setTimeout(async () => {
@@ -106,7 +108,11 @@ Helpers.query = async (id) => {
 	let response;
 	let body;
 	try {
-		({ response, body } = await request.get(`https://${hostname}/.well-known/webfinger?${query}`));
+		({ response, body } = await request.get(`https://${hostname}/.well-known/webfinger?${query}`, {
+			headers: {
+				accept: 'application/jrd+json',
+			},
+		}));
 	} catch (e) {
 		return false;
 	}
@@ -439,8 +445,12 @@ Helpers.remoteAnchorToLocalProfile = async (content, isMarkdown = false) => {
 	return content;
 };
 
-// eslint-disable-next-line max-len
-Helpers.makeSet = (object, properties) => new Set(properties.reduce((memo, property) => memo.concat(Array.isArray(object[property]) ? object[property] : [object[property]]), []));
+Helpers.makeSet = (object, properties) => new Set(properties.reduce((memo, property) =>
+	memo.concat(object[property] ?
+		Array.isArray(object[property]) ?
+			object[property] :
+			[object[property]] :
+		[]), []));
 
 Helpers.generateCollection = async ({ set, method, page, perPage, url }) => {
 	if (!method) {

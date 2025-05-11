@@ -13,6 +13,7 @@ const winston = require('winston');
 
 const db = require('../database');
 const user = require('../user');
+const categories = require('../categories');
 const meta = require('../meta');
 const privileges = require('../privileges');
 const activitypub = require('../activitypub');
@@ -37,13 +38,29 @@ function enabledCheck(next) {
 
 activitypubApi.follow = enabledCheck(async (caller, { type, id, actor } = {}) => {
 	// Privilege checks should be done upstream
+	const acceptedTypes = ['uid', 'cid'];
 	const assertion = await activitypub.actors.assert(actor);
-	if (!assertion || (Array.isArray(assertion) && assertion.length)) {
+	if (!acceptedTypes.includes(type) || !assertion || (Array.isArray(assertion) && assertion.length)) {
 		throw new Error('[[error:activitypub.invalid-id]]');
 	}
 
-	actor = actor.includes('@') ? await user.getUidByUserslug(actor) : actor;
-	const handle = await user.getUserField(actor, 'username');
+	if (actor.includes('@')) {
+		const [uid, cid] = await Promise.all([
+			user.getUidByUserslug(actor),
+			categories.getCidByHandle(actor),
+		]);
+
+		actor = uid || cid;
+	}
+	const [handle, isFollowing] = await Promise.all([
+		user.getUserField(actor, 'username'),
+		db.isSortedSetMember(type === 'uid' ? `followingRemote:${id}` : `cid:${id}:following`, actor),
+	]);
+
+	if (isFollowing) { // already following
+		return;
+	}
+
 	const timestamp = Date.now();
 
 	await db.sortedSetAdd(`followRequests:${type}.${id}`, timestamp, actor);
@@ -61,13 +78,31 @@ activitypubApi.follow = enabledCheck(async (caller, { type, id, actor } = {}) =>
 
 // should be .undo.follow
 activitypubApi.unfollow = enabledCheck(async (caller, { type, id, actor }) => {
+	const acceptedTypes = ['uid', 'cid'];
 	const assertion = await activitypub.actors.assert(actor);
-	if (!assertion) {
+	if (!acceptedTypes.includes(type) || !assertion) {
 		throw new Error('[[error:activitypub.invalid-id]]');
 	}
 
-	actor = actor.includes('@') ? await user.getUidByUserslug(actor) : actor;
-	const handle = await user.getUserField(actor, 'username');
+	if (actor.includes('@')) {
+		const [uid, cid] = await Promise.all([
+			user.getUidByUserslug(actor),
+			categories.getCidByHandle(actor),
+		]);
+
+		actor = uid || cid;
+	}
+
+	const [handle, isFollowing, isPending] = await Promise.all([
+		user.getUserField(actor, 'username'),
+		db.isSortedSetMember(type === 'uid' ? `followingRemote:${id}` : `cid:${id}:following`, actor),
+		db.isSortedSetMember(`followRequests:${type === 'uid' ? 'uid' : 'cid'}.${id}`, actor),
+	]);
+
+	if (!isFollowing && !isPending) { // already not following/pending
+		return;
+	}
+
 	const timestamps = await db.sortedSetsScore([
 		`followRequests:${type}.${id}`,
 		type === 'uid' ? `followingRemote:${id}` : `cid:${id}:following`,
@@ -124,24 +159,12 @@ activitypubApi.create.note = enabledCheck(async (caller, { pid, post }) => {
 		return;
 	}
 
-	const object = await activitypub.mocks.notes.public(post);
-	const { to, cc, targets } = await activitypub.buildRecipients(object, { pid, uid: post.user.uid });
-	object.to = to;
-	object.cc = cc;
-
-	const payload = {
-		id: `${object.id}#activity/create/${Date.now()}`,
-		type: 'Create',
-		actor: object.attributedTo,
-		to,
-		cc,
-		object,
-	};
+	const { activity, targets } = await activitypub.mocks.activities.create(pid, caller.uid, post);
 
 	await Promise.all([
-		activitypub.send('uid', caller.uid, Array.from(targets), payload),
-		activitypub.feps.announce(pid, payload),
-		activitypubApi.add(caller, { pid }),
+		activitypub.send('uid', caller.uid, Array.from(targets), activity),
+		activitypub.feps.announce(pid, activity),
+		// utils.isNumber(post.cid) ? activitypubApi.add(caller, { pid }) : undefined,
 	]);
 });
 
@@ -399,6 +422,7 @@ activitypubApi.flag = enabledCheck(async (caller, flag) => {
 	await db.sortedSetAdd(`flag:${flag.flagId}:remote`, Date.now(), caller.uid);
 });
 
+/*
 activitypubApi.add = enabledCheck((async (_, { pid }) => {
 	let localId;
 	if (String(pid).startsWith(nconf.get('url'))) {
@@ -425,7 +449,7 @@ activitypubApi.add = enabledCheck((async (_, { pid }) => {
 		target: `${nconf.get('url')}/topic/${tid}`,
 	});
 }));
-
+*/
 activitypubApi.undo.flag = enabledCheck(async (caller, flag) => {
 	if (!activitypub.helpers.isUri(flag.targetId)) {
 		return;

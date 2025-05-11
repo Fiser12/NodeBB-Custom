@@ -50,7 +50,7 @@
     "header.navigation": "Navegación",
     "header.manage": "Manage",
     "header.drafts": "Drafts",
-    "header.world": "World",
+    "header.world": "Mundo",
     "notifications.loading": "Cargando notificaciones",
     "chats.loading": "Cargando chats",
     "drafts.loading": "Loading Drafts",
@@ -82,6 +82,7 @@
     "downvoted": "Votado negativamente",
     "views": "Visitas",
     "posters": "Posters",
+    "watching": "Watching",
     "reputation": "Reputación",
     "lastpost": "Last post",
     "firstpost": "First post",
@@ -111,7 +112,7 @@
     "dnd": "No molestar",
     "invisible": "Invisible",
     "offline": "Desconectado",
-    "remote-user": "This user is from outside of this forum",
+    "remote-user": "Este usuario es externo a este foro",
     "email": "Email",
     "language": "Idioma",
     "guest": "Invitado",
@@ -148,6 +149,6 @@
     "hidden": "Hidden",
     "sort": "Sort",
     "actions": "Actions",
-    "rss-feed": "RSS Feed",
-    "skip-to-content": "Skip to content"
+    "rss-feed": "Feed RSS",
+    "skip-to-content": "Omitir al contenido"
 }

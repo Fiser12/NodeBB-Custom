@@ -9,6 +9,7 @@ const meta = require('../meta');
 const privileges = require('../privileges');
 const categories = require('../categories');
 const messaging = require('../messaging');
+const notifications = require('../notifications');
 const user = require('../user');
 const topics = require('../topics');
 const posts = require('../posts');
@@ -78,6 +79,7 @@ Notes.assert = async (uid, input, options = { skipChecks: false }) => {
 	const hasTid = !!tid;
 
 	const cid = hasTid ? await topics.getTopicField(tid, 'cid') : options.cid || -1;
+
 	if (options.cid && cid === -1) {
 		// Move topic if currently uncategorized
 		await topics.tools.move(tid, { cid: options.cid, uid: 'system' });
@@ -96,16 +98,24 @@ Notes.assert = async (uid, input, options = { skipChecks: false }) => {
 	if (hasTid) {
 		mainPid = await topics.getTopicField(tid, 'mainPid');
 	} else {
-		// Check recipients/audience for local category
+		// Check recipients/audience for category (local or remote)
 		const set = activitypub.helpers.makeSet(_activitypub, ['to', 'cc', 'audience']);
+		await activitypub.actors.assert(Array.from(set));
+
+		// Local
 		const resolved = await Promise.all(Array.from(set).map(async id => await activitypub.helpers.resolveLocalId(id)));
 		const recipientCids = resolved
 			.filter(Boolean)
 			.filter(({ type }) => type === 'category')
 			.map(obj => obj.id);
-		if (recipientCids.length) {
+
+		// Remote
+		const assertedGroups = await db.exists(Array.from(set).map(id => `categoryRemote:${id}`));
+		const remoteCid = Array.from(set).filter((_, idx) => assertedGroups[idx]).shift();
+
+		if (remoteCid || recipientCids.length) {
 			// Overrides passed-in value, respect addressing from main post over booster
-			options.cid = recipientCids.shift();
+			options.cid = remoteCid || recipientCids.shift();
 		}
 
 		// mainPid ok to leave as-is
@@ -129,7 +139,7 @@ Notes.assert = async (uid, input, options = { skipChecks: false }) => {
 		options.skipChecks || options.cid ||
 		await assertRelation(chain[inputIndex !== -1 ? inputIndex : 0]);
 	const privilege = `topics:${tid ? 'reply' : 'create'}`;
-	const allowed = await privileges.categories.can(privilege, cid, activitypub._constants.uid);
+	const allowed = await privileges.categories.can(privilege, options.cid || cid, activitypub._constants.uid);
 	if (!hasRelation || !allowed) {
 		if (!hasRelation) {
 			activitypub.helpers.log(`[activitypub/notes.assert] Not asserting ${id} as it has no relation to existing tracked content.`);
@@ -286,31 +296,44 @@ Notes.assertPrivate = async (object) => {
 		timestamp = Date.now();
 	}
 
+	const payload = await activitypub.mocks.message(object);
+
+	try {
+		await messaging.checkContent(payload.content, false);
+	} catch (e) {
+		const { displayname, userslug } = await user.getUserFields(payload.uid, ['displayname', 'userslug']);
+		const notification = await notifications.create({
+			bodyShort: `[[error:remote-chat-received-too-long, ${displayname}]]`,
+			path: `/user/${userslug}`,
+			nid: `error:chat:uid:${payload.uid}`,
+			from: payload.uid,
+		});
+		notifications.push(notification, Array.from(recipients).filter(uid => utils.isNumber(uid)));
+		return null;
+	}
+
 	if (!roomId) {
-		roomId = await messaging.newRoom(object.attributedTo, { uids: [...recipients] });
+		roomId = await messaging.newRoom(payload.uid, { uids: [...recipients] });
 	}
 
 	// Add any new members to the chat
 	const added = Array.from(recipients).filter(uid => !participantUids.includes(uid));
 	const assertion = await activitypub.actors.assert(added);
 	if (assertion) {
-		await messaging.addUsersToRoom(object.attributedTo, added, roomId);
+		await messaging.addUsersToRoom(payload.uid, added, roomId);
 	}
 
 	// Add message to room
 	const message = await messaging.sendMessage({
-		mid: object.id,
-		uid: object.attributedTo,
-		roomId: roomId,
-		content: object.content,
-		toMid: toMid,
+		...payload,
 		timestamp: Date.now(),
-		// ip: caller.ip,
+		roomId: roomId,
+		toMid: toMid,
 	});
-	messaging.notifyUsersInRoom(object.attributedTo, roomId, message);
+	messaging.notifyUsersInRoom(payload.uid, roomId, message);
 
 	// Set real timestamp back so that the message shows even though it predates room joining
-	await messaging.setMessageField(object.id, 'timestamp', timestamp);
+	await messaging.setMessageField(payload.mid, 'timestamp', timestamp);
 
 	return { roomId };
 };
@@ -440,6 +463,12 @@ Notes.syncUserInboxes = async function (tid, uid) {
 		uids.add(uid);
 	});
 
+	// Category followers
+	const categoryFollowers = await activitypub.actors.getLocalFollowers(cid);
+	categoryFollowers.uids.forEach((uid) => {
+		uids.add(uid);
+	});
+
 	const keys = Array.from(uids).map(uid => `uid:${uid}:inbox`);
 	const score = await db.sortedSetScore(`cid:${cid}:tids`, tid);
 
@@ -498,9 +527,11 @@ Notes.announce.list = async ({ pid, tid }) => {
 };
 
 Notes.announce.add = async (pid, actor, timestamp = Date.now()) => {
-	const tid = await posts.getPostField(pid, 'tid');
-	await Promise.all([
+	const [tid] = await Promise.all([
+		posts.getPostField(pid, 'tid'),
 		db.sortedSetAdd(`pid:${pid}:announces`, timestamp, actor),
+	]);
+	await Promise.all([
 		posts.setPostField(pid, 'announces', await db.sortedSetCard(`pid:${pid}:announces`)),
 		topics.tools.share(tid, actor, timestamp),
 	]);
@@ -550,7 +581,7 @@ Notes.prune = async () => {
 	 */
 	winston.info('[notes/prune] Starting scheduled pruning of topics');
 	const start = '-inf';
-	const stop = Date.now() - (1000 * 60 * 60 * 24 * 30); // 30 days; todo: make configurable?
+	const stop = Date.now() - (1000 * 60 * 60 * 24 * meta.config.activitypubContentPruneDays);
 	let tids = await db.getSortedSetRangeByScore('cid:-1:tids', 0, -1, start, stop);
 
 	winston.info(`[notes/prune] Found ${tids.length} topics older than 30 days (since last activity).`);

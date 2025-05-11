@@ -27,7 +27,7 @@ tagsController.getTag = async function (req, res) {
 		breadcrumbs: helpers.buildBreadcrumbs([{ text: '[[tags:tags]]', url: '/tags' }, { text: tag }]),
 		title: `[[pages:tag, ${tag}]]`,
 	};
-	let [settings, cids, categoryData, canPost, isPrivileged, rssToken, isFollowing] = await Promise.all([
+	const [settings, cids, categoryData, canPost, isPrivileged, rssToken, isFollowing] = await Promise.all([
 		user.getSettings(req.uid),
 		cid || categories.getCidsByPrivilege('categories:cid', req.uid, 'topics:read'),
 		helpers.getSelectedCategory(cid),
@@ -37,19 +37,12 @@ tagsController.getTag = async function (req, res) {
 		topics.isFollowingTag(req.params.tag, req.uid),
 	]);
 
-	// Explicitly exclude cid -1 if cid not specified
-	if (!cid) {
-		cids = new Set(cids);
-		cids.delete(-1);
-		cids = Array.from(cids);
-	}
-
 	const start = Math.max(0, (page - 1) * settings.topicsPerPage);
 	const stop = start + settings.topicsPerPage - 1;
 
 	const [topicCount, tids] = await Promise.all([
-		topics.getTagTopicCount(tag, cids),
-		topics.getTagTidsByCids(tag, cids, start, stop),
+		topics.getTagTopicCount(req.params.tag, cids),
+		topics.getTagTidsByCids(req.params.tag, cids, start, stop),
 	]);
 
 	templateData.topics = await topics.getTopics(tids, req.uid);
