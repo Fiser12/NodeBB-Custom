@@ -144,7 +144,7 @@ Helpers.mocks.like = (override = {}) => {
 
 	const activity = {
 		'@context': 'https://www.w3.org/ns/activitystreams',
-		id: `${Helpers.mocks._baseUrl}/like/${encodeURIComponent(object)}`,
+		id: `${Helpers.mocks._baseUrl}/like/${encodeURIComponent(object.id || object)}`,
 		type: 'Like',
 		actor,
 		object,
@@ -162,6 +162,8 @@ Helpers.mocks.announce = (override = {}) => {
 	if (!object) {
 		({ id: object } = Helpers.mocks.note());
 	}
+	delete override.actor;
+	delete override.object;
 
 	const activity = {
 		'@context': 'https://www.w3.org/ns/activitystreams',
@@ -171,6 +173,7 @@ Helpers.mocks.announce = (override = {}) => {
 		cc: [`${actor}/followers`],
 		actor,
 		object,
+		...override,
 	};
 
 	return { activity };
@@ -190,6 +193,29 @@ Helpers.mocks.update = (override = {}) => {
 		'@context': 'https://www.w3.org/ns/activitystreams',
 		id: `${Helpers.mocks._baseUrl}/update/${encodeURIComponent(object.id || object)}`,
 		type: 'Update',
+		to: [activitypub._constants.publicAddress],
+		cc: [`${actor}/followers`],
+		actor,
+		object,
+	};
+
+	return { activity };
+};
+
+Helpers.mocks.delete = (override = {}) => {
+	let actor = override.actor;
+	let object = override.object;
+	if (!actor) {
+		({ id: actor } = Helpers.mocks.person());
+	}
+	if (!object) {
+		({ id: object } = Helpers.mocks.note());
+	}
+
+	const activity = {
+		'@context': 'https://www.w3.org/ns/activitystreams',
+		id: `${Helpers.mocks._baseUrl}/delete/${encodeURIComponent(object.id || object)}`,
+		type: 'Delete',
 		to: [activitypub._constants.publicAddress],
 		cc: [`${actor}/followers`],
 		actor,
