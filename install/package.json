@@ -103,6 +103,7 @@
         "nconf": "0.13.0",
         "nodebb-plugin-2factor": "7.5.10",
         "nodebb-plugin-composer-default": "10.2.50",
+        "nodebb-plugin-customize": "^4.1.1",
         "nodebb-plugin-dbsearch": "6.2.19",
         "nodebb-plugin-emoji": "6.0.2",
         "nodebb-plugin-emoji-apple": "4.1.1",
