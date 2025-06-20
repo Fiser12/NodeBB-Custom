@@ -294,9 +294,13 @@ inbox.announce = async (req) => {
 			const { id: localId } = await activitypub.helpers.resolveLocalId(id);
 			const exists = await posts.exists(localId || id);
 			if (exists) {
-				const result = await posts.upvote(localId || id, object.actor);
-				if (localId) {
-					socketHelpers.upvote(result, 'notifications:upvoted-your-post-in');
+				try {
+					const result = await posts.upvote(localId || id, object.actor);
+					if (localId) {
+						socketHelpers.upvote(result, 'notifications:upvoted-your-post-in');
+					}
+				} catch (e) {
+					// vote denied due to local limitations (frequency, privilege, etc.); noop.
 				}
 			}
 
@@ -542,7 +546,8 @@ inbox.undo = async (req) => {
 		case 'Like': {
 			const exists = await posts.exists(id);
 			if (localType !== 'post' || !exists) {
-				throw new Error('[[error:invalid-pid]]');
+				reject('Like', object, actor);
+				break;
 			}
 
 			const allowed = await privileges.posts.can('posts:upvote', id, activitypub._constants.uid);
