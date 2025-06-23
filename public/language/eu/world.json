@@ -1,0 +1,21 @@
+{
+    "name": "Mundua",
+    "popular": "Gai popularrak",
+    "recent": "Gai guztiak",
+    "help": "Laguntza",
+
+    "help.title": "Zer da orri hau?",
+    "help.intro": "Ongi etorri fedibertsoko zure txokora.",
+    "help.fediverse": "\"Fedibertsoa\" elkarren artean komunikatzen diren eta erabiltzaileek elkar ikus dezaketen aplikazio eta webgune interkonektatuen sare bat da. Foro hau federatua da, eta sare sozial horrekin (edo \"fedibertsoarekin\") interakzioan aritu daiteke. Orri hau fedibertsoko zure txokoa da. <strong>Zuk</strong> jarraitzen dituzun erabiltzaileek sortutako —eta partekatutako— gaiez osatuta dago soilik.",
+    "help.build": "Baliteke hasieran hemen gai askorik ez egotea; normala da. Beste erabiltzaile batzuk jarraitzen hasten zarenean, denborarekin eduki gehiago ikusten hasiko zara hemen.",
+    "help.federating": "Era berean, foro honetatik kanpoko erabiltzaileak <em>zuri</em> jarraitzen hasten bazaizkizu, zure mezuak aplikazio eta webgune horietan ere agertzen hasiko dira.",
+    "help.next-generation": "Hau sare sozialen hurrengo belaunaldia da, hasi gaur bertan ekarpenak egiten!",
+
+    "onboard.title": "Zure leihoa fedibertsora...",
+    "onboard.what": "Hau zure kategoria pertsonalizatua da, soilik foro honetatik kanpo aurkitutako edukiz osatua. Orri honetan zerbait agertzea haiei jarraitzen diezun ala ez, edo mezu hori zuk jarraitzen duzun norbaitek partekatu duenaren araberakoa da.",
+    "onboard.why": "Gauza asko gertatzen da foro honetatik kanpo, eta dena ez da zure interesekoa. Horregatik, jendeari jarraitzea da norbaitengandik gehiago ikusi nahi duzula adierazteko modurik onena.",
+    "onboard.how": "Bitartean, goiko lasterbide-botoietan klik egin dezakezu foroak zeri buruz dakien ikusteko, eta eduki berriak aurkitzen hasteko!",
+
+    "show-categories": "Kategoriak erakutsi",
+    "hide-categories": "Kategoriak ezkutatu"
+}
